@@ -1,3 +1,5 @@
+const { sortFilesByType } = require('./util');
+
 class WebpackEntryStatsPlugin {
   constructor(opts) {
     this.filename = opts.filename || 'stats.json';
@@ -10,7 +12,7 @@ class WebpackEntryStatsPlugin {
       const entrypoints = Object.keys(stats.entrypoints);
 
       const files = entrypoints.reduce((acc, entrypoint) => {
-        acc[entrypoint] = this.sortFilesByType(stats.entrypoints[entrypoint].assets);
+        acc[entrypoint] = sortFilesByType(stats.entrypoints[entrypoint].assets);
         return acc;
       }, {});
 
@@ -29,17 +31,6 @@ class WebpackEntryStatsPlugin {
     });
   }
 
-  sortFilesByType(assets) {
-    return assets.reduce((acc, file) => {
-      const ext = file.match(/\.([\w]+)$/)[1];
-
-      acc.hasOwnProperty(ext) ?
-        acc[ext].push(file) :
-        acc[ext] = [file];
-
-      return acc;
-    }, {});
-  }
 }
 
 module.exports = WebpackEntryStatsPlugin;
