@@ -1,5 +1,5 @@
-import fs from 'fs';
 import path from 'path';
+import MemoryFs from 'memory-fs';
 import rimraf from 'rimraf';
 import webpack from 'webpack';
 
@@ -8,7 +8,8 @@ import WebpackEntryStatsPlugin from '../';
 const config = () => {
   return {
     entry: {
-      entry: path.resolve(__dirname, './fixtures/index.js')
+      one: path.resolve(__dirname, './fixtures/index.js'),
+      two: path.resolve(__dirname, './fixtures/two.js')
     },
     output: {
       path: path.resolve(__dirname, 'tmp'),
@@ -23,18 +24,37 @@ const config = () => {
         minSize: 5000,
         maxSize: 10000
       }),
-      new WebpackEntryStatsPlugin({})
+      new WebpackEntryStatsPlugin()
     ],
     'devtool': 'sourcemap'
   };
 };
 
-describe('Webpack Entry Stats Plugin', () => {
-  let stats;
+const readStatsFile = (file, fs) => {
+  return new Promise((resolve, reject) => {
+    const actual = fs.readFile(path.resolve(__dirname, file), 'utf8', (err, src) => {
+      if (err) {
+        return reject(err);
+      }
 
-  const getStats = (config) => {
+      try {
+        src = JSON.parse(src);
+      } catch (err) {
+        return reject(err);
+      }
+
+      resolve(src);
+    });
+  });
+};
+
+describe('Webpack Entry Stats Plugin', () => {
+  let statsFile, fs, stats;
+
+  const getStats = (config, fs) => {
     return new Promise((resolve, reject) => {
       const compiler = webpack(config);
+      compiler.outputFileSystem = fs;
 
       compiler.run((err, stats) => {
         if (err || stats.hasErrors()) {
@@ -49,45 +69,29 @@ describe('Webpack Entry Stats Plugin', () => {
   };
 
   beforeEach(async () => {
-    stats = await getStats(config());
+    fs = new MemoryFs();
+    stats = await getStats(config(), fs);
+    statsFile = await readStatsFile('./tmp/stats.json', fs);
   });
 
-  afterEach(() => {
-    return new Promise((resolve, reject) => {
-      rimraf(path.resolve(__dirname, './tmp'), (err) => {
-        if (err) {
-          return reject(err);
-        }
-
-        resolve();
-      });
-    });
-  });
-
-  const readFile = (file) => {
-    return new Promise((resolve, reject) => {
-      const actual = fs.readFile(path.resolve(__dirname, file), 'utf8', (err, src) => {
-        if (err) {
-          return reject(err);
-        }
-
-        try {
-          src = JSON.parse(src);
-        } catch (err) {
-          return reject(err);
-        }
-
-        resolve(src);
-      });
-    });
-  }
-
-  it('should pass', async () => {
+  it('creates stats entries for each entry point', async () => {
     const expectedEntries = Object.keys(stats.entrypoints);
 
-    const file = await readFile('./tmp/stats.json');
-    const actualEntries = Object.keys(file);
+    const actualEntries = Object.keys(statsFile);
 
     expect(actualEntries).toEqual(expectedEntries);
+  });
+
+  it('adds extension types as keys in entry stats object', async () => {
+    const entry = Object.keys(statsFile)[0];
+    const extensions = Object.keys(statsFile[entry]);
+
+    expect(extensions.length).toEqual(2);
+    expect(extensions[0]).toEqual('js');
+    expect(extensions[1]).toEqual('map');
+  });
+
+  it('adds required assets for each entry', async () => {
+    statsFile
   });
 });

@@ -7,11 +7,12 @@
   "author": "songawee <songawee@gmail.com>",
   "license": "MIT",
   "scripts": {
-    "test": "jest"
+    "test": "jest",
+    "test:watch": "npm run test -- --watch"
   },
   "jest": {
     "modulePathIgnorePatterns": [
-      "spec/fixtures/tmp/"
+      "/spec/fixtures/tmp/"
     ],
     "verbose": true
   },
@@ -23,6 +24,7 @@
   "devDependencies": {
     "babel-plugin-transform-es2015-modules-commonjs": "^6.24.0",
     "babel-preset-es2017": "^6.22.0",
+    "memory-fs": "^0.4.1",
     "rimraf": "^2.6.1",
     "webpack": "^2.2.1"
   }

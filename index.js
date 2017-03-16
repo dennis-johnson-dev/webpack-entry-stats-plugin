@@ -1,7 +1,7 @@
 const { sortFilesByType } = require('./util');
 
 class WebpackEntryStatsPlugin {
-  constructor(opts) {
+  constructor(opts = {}) {
     this.filename = opts.filename || 'stats.json';
   }
 
