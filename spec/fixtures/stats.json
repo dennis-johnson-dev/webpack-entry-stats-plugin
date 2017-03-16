@@ -1,0 +1,38 @@
+{
+  "main": {
+    "js": [
+      "runtime.5aab4dff182bf50445a9.js",
+      "common.bb9273be03189cd85d04.js",
+      "8.5f211f8b8e7d3b5c5dfd.js",
+      "9.b9aa39572aca4d732d7b.js",
+      "0.43a220cb9db53a7ae2eb.js"
+    ],
+    "map": [
+      "runtime.5aab4dff182bf50445a9.js.map",
+      "common.bb9273be03189cd85d04.js.map",
+      "8.5f211f8b8e7d3b5c5dfd.js.map",
+      "styles.c664167902bc6605c3bed662ba86b5e0.css.map",
+      "9.b9aa39572aca4d732d7b.js.map",
+      "0.43a220cb9db53a7ae2eb.js.map"
+    ],
+    "css": [
+      "styles.c664167902bc6605c3bed662ba86b5e0.css"
+    ]
+  },
+  "secondary": {
+    "js": [
+      "runtime.5aab4dff182bf50445a9.js",
+      "common.bb9273be03189cd85d04.js",
+      "secondary.a0113ee987734bda8023.js"
+    ],
+    "map": [
+      "runtime.5aab4dff182bf50445a9.js.map",
+      "common.bb9273be03189cd85d04.js.map",
+      "secondary.a0113ee987734bda8023.js.map",
+      "styles.ac6ea1410939c603e7cd4e848140e2ab.css.map"
+    ],
+    "css": [
+      "styles.ac6ea1410939c603e7cd4e848140e2ab.css"
+    ]
+  }
+}
