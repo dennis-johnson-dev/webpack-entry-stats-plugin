@@ -33,17 +33,18 @@ const config = () => {
 const readStatsFile = (file, fs) => {
   return new Promise((resolve, reject) => {
     const actual = fs.readFile(path.resolve(__dirname, file), 'utf8', (err, src) => {
+      let json;
       if (err) {
         return reject(err);
       }
 
       try {
-        src = JSON.parse(src);
+        json = JSON.parse(src);
       } catch (err) {
         return reject(err);
       }
 
-      resolve(src);
+      resolve(json);
     });
   });
 };
@@ -51,7 +52,7 @@ const readStatsFile = (file, fs) => {
 describe('Webpack Entry Stats Plugin', () => {
   let statsFile, fs, stats;
 
-  const getStats = (config, fs) => {
+  const getStats = (config) => {
     return new Promise((resolve, reject) => {
       const compiler = webpack(config);
       compiler.outputFileSystem = fs;
@@ -70,13 +71,12 @@ describe('Webpack Entry Stats Plugin', () => {
 
   beforeEach(async () => {
     fs = new MemoryFs();
-    stats = await getStats(config(), fs);
+    stats = await getStats(config());
     statsFile = await readStatsFile('./tmp/stats.json', fs);
   });
 
   it('creates stats entries for each entry point', async () => {
     const expectedEntries = Object.keys(stats.entrypoints);
-
     const actualEntries = Object.keys(statsFile);
 
     expect(actualEntries).toEqual(expectedEntries);
@@ -87,11 +87,19 @@ describe('Webpack Entry Stats Plugin', () => {
     const extensions = Object.keys(statsFile[entry]);
 
     expect(extensions.length).toEqual(2);
-    expect(extensions[0]).toEqual('js');
-    expect(extensions[1]).toEqual('map');
+    expect(extensions).toContain('js');
+    expect(extensions).toContain('map');
   });
 
   it('adds required assets for each entry', async () => {
-    statsFile
+    const entries = Object.keys(statsFile);
+
+    entries.forEach((entry) => {
+      expect(statsFile[entry].js.length).toEqual(2);
+      expect(statsFile[entry].map.length).toEqual(2);
+
+      expect(statsFile[entry].js).toEqual(['runtime.js', `${entry}.js`]);
+      expect(statsFile[entry].map).toEqual(['runtime.js.map', `${entry}.js.map`]);
+    });
   });
 });

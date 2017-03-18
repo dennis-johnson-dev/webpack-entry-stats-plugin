@@ -11,9 +11,6 @@
     "test:watch": "npm run test -- --watch"
   },
   "jest": {
-    "modulePathIgnorePatterns": [
-      "/spec/fixtures/tmp/"
-    ],
     "verbose": true
   },
   "dependencies": {
