@@ -1,15 +1,15 @@
 module.exports = (files) => {
   return files.reduce((acc, file) => {
-    const match = file.match(/\.([\w]+)$/);
-    if (!match) {
+    const matchGroup = file.match(/([.])(\w+)$/);
+    if (!matchGroup) {
       return acc;
     }
 
-    const ext = match[1];
+    const [fullMatch, delimiter, extension] = matchGroup;
 
-    acc.hasOwnProperty(ext) ?
-      acc[ext].push(file) :
-      acc[ext] = [file];
+    acc.hasOwnProperty(extension) ?
+      acc[extension].push(file) :
+      acc[extension] = [file];
 
     return acc;
   }, {});
