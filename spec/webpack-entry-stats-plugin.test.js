@@ -93,6 +93,7 @@ describe('Webpack Entry Stats Plugin', () => {
 
   it('adds required assets for each entry', async () => {
     const entries = Object.keys(statsFile);
+    console.log(statsFile);
 
     entries.forEach((entry) => {
       expect(statsFile[entry].js.length).toEqual(2);
