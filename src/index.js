@@ -2,7 +2,7 @@ const { sortFilesByType } = require('./util');
 
 class WebpackEntryStatsPlugin {
   constructor(opts = {}) {
-    this.filename = opts.filename || 'stats.json';
+    this.filename = opts.filename && opts.filename + '.json' || 'stats.json';
   }
 
   apply(compiler) {
@@ -30,7 +30,6 @@ class WebpackEntryStatsPlugin {
       cb();
     });
   }
-
 }
 
 module.exports = WebpackEntryStatsPlugin;

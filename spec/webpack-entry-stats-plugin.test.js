@@ -5,7 +5,7 @@ import webpack from 'webpack';
 
 import WebpackEntryStatsPlugin from '../src/';
 
-const config = () => {
+const config = (options = {}) => {
   return {
     entry: {
       one: path.resolve(__dirname, './fixtures/index.js'),
@@ -24,7 +24,7 @@ const config = () => {
         minSize: 5000,
         maxSize: 10000
       }),
-      new WebpackEntryStatsPlugin()
+      new WebpackEntryStatsPlugin({ filename: options.filename })
     ],
     'devtool': 'sourcemap'
   };
@@ -35,6 +35,7 @@ const readStatsFile = (file, fs) => {
     const actual = fs.readFile(path.resolve(__dirname, file), 'utf8', (err, src) => {
       let json;
       if (err) {
+        console.log(err);
         return reject(err);
       }
 
@@ -93,7 +94,6 @@ describe('Webpack Entry Stats Plugin', () => {
 
   it('adds required assets for each entry', async () => {
     const entries = Object.keys(statsFile);
-    console.log(statsFile);
 
     entries.forEach((entry) => {
       expect(statsFile[entry].js.length).toEqual(2);
@@ -102,5 +102,10 @@ describe('Webpack Entry Stats Plugin', () => {
       expect(statsFile[entry].js).toEqual(['runtime.js', `${entry}.js`]);
       expect(statsFile[entry].map).toEqual(['runtime.js.map', `${entry}.js.map`]);
     });
+  });
+
+  it('uses filename parameter', async () => {
+    stats = await getStats(config({ filename: 'foo' }));
+    statsFile = await readStatsFile('./tmp/foo.json', fs);
   });
 });
