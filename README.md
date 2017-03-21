@@ -1,13 +1,15 @@
 # webpack-entry-stats-plugin
 Webpack plugin emitting a JSON file containing the required assets for each of the entrypoints.
 
-This is useful if you are code splitting initial chunks and need a reference to the hashed filenames for use in building script tag urls.
+This is useful if you are code splitting initial chunks (something like AggressiveSplittingPlugin) and need a reference to the hashed filenames for use in building script tag urls.
 
 # Installation
 
 ```
 $ yarn add --dev webpack-entry-stats-plugin
 ```
+
+> __Note__: This plugin requires Node 4.7 and Webpack 2.
 
 # Usage
 
