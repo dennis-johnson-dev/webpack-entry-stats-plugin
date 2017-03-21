@@ -3,7 +3,7 @@ import MemoryFs from 'memory-fs';
 import rimraf from 'rimraf';
 import webpack from 'webpack';
 
-import WebpackEntryStatsPlugin from '../';
+import WebpackEntryStatsPlugin from '../src/';
 
 const config = () => {
   return {

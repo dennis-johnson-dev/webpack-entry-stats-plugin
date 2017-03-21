@@ -2,11 +2,12 @@
   "name": "webpack-entry-stats-plugin",
   "version": "0.0.1",
   "description": "Webpack plugin that outputs a JSON file with the relevant assets associated with each of the built entrypoints. Useful with the AggressiveSplittingPlugin.",
-  "main": "index.js",
+  "main": "lib/index.js",
   "repository": "https://github.com/songawee/webpack-entry-stats-plugin",
   "author": "songawee <songawee@gmail.com>",
   "license": "MIT",
   "scripts": {
+    "build": "babel src/ -d lib/",
     "test": "jest",
     "test:watch": "npm run test -- --watch"
   },
@@ -19,7 +20,9 @@
     "jest-cli": "^19.0.2"
   },
   "devDependencies": {
+    "babel-cli": "^6.24.0",
     "babel-plugin-transform-es2015-modules-commonjs": "^6.24.0",
+    "babel-preset-es2015": "^6.24.0",
     "babel-preset-es2017": "^6.22.0",
     "memory-fs": "^0.4.1",
     "rimraf": "^2.6.1",
