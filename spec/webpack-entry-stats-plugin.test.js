@@ -35,7 +35,7 @@ const readStatsFile = (file, fs) => {
     const actual = fs.readFile(path.resolve(__dirname, file), 'utf8', (err, src) => {
       let json;
       if (err) {
-        console.log(err);
+        console.error(err);
         return reject(err);
       }
 
