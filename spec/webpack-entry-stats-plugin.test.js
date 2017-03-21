@@ -6,6 +6,7 @@ import webpack from 'webpack';
 import WebpackEntryStatsPlugin from '../src/';
 
 const config = (options = {}) => {
+
   return {
     entry: {
       one: path.resolve(__dirname, './fixtures/index.js'),
@@ -13,6 +14,7 @@ const config = (options = {}) => {
     },
     output: {
       path: path.resolve(__dirname, 'tmp'),
+      publicPath: '/resources',
       filename: '[name].js'
     },
     plugins: [
@@ -24,7 +26,10 @@ const config = (options = {}) => {
         minSize: 5000,
         maxSize: 10000
       }),
-      new WebpackEntryStatsPlugin({ filename: options.filename })
+      new WebpackEntryStatsPlugin({
+        filename: options.filename,
+        usePublicPath: options.usePublicPath
+      })
     ],
     'devtool': 'sourcemap'
   };
@@ -107,5 +112,10 @@ describe('Webpack Entry Stats Plugin', () => {
   it('uses filename parameter', async () => {
     stats = await getStats(config({ filename: 'foo' }));
     statsFile = await readStatsFile('./tmp/foo.json', fs);
+  });
+
+  it.only('adds publicPath to asset name', async () => {
+    stats = await getStats(config({ usePublicPath: true }));
+    console.log(statsFile);
   });
 });

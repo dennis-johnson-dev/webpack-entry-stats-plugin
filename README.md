@@ -26,24 +26,38 @@ plugins: [
 
 ## Options
 
-- filename?: String
+option | type | default | required
+--- | --- | --- | ---
+*filename* | String | `stats.json` | false
+*usePublicPath* | Boolean | false | false
+
 
 ## Output
 
-A `.json` file that contains an object with a key for each entrypoint. The value of each key is an object containing keys mapped to extensions. For each extension, you will find an array of files you must load in the specified order for the application to load correctly.
+A `.json` file that contains an object with a key for each entrypoint that specifies the order for which to load the application correctly.
 
 i.e.
 ```js
 {
-  one: {
-    js: [ 'runtime.js', 'one.js' ],
-    map: [ 'runtime.js.map', 'one.js.map' ]
+  'entry-one': {
+    js: [ 'manifest.js', 'entry-one.js' ],
+    map: [ 'manifest.js.map', 'entry-one.js.map' ]
   },
-  two: {
-    js: [ 'runtime.js', 'two.js' ],
-    map: [ 'runtime.js.map', 'two.js.map' ]
+  'entry-two': {
+    js: [ 'manifest.js', 'entry-two.js' ],
+    map: [ 'manifest.js.map', 'entry-two.js.map' ]
   }
 }
+```
+
+This is saying we need to load `manifest.js` and then our entrypoint, probably in the form of script tags.
+
+```html
+<!-- index.html -->
+...
+<script src="/manifest.js"></script>
+<script src="/entry-one.js"></script>
+...
 ```
 
 If the extract-text-webpack-plugin were included, you would see a `css` key under each entrypoint's extension map.

@@ -3,16 +3,25 @@ const { sortFilesByType } = require('./util');
 class WebpackEntryStatsPlugin {
   constructor(opts = {}) {
     this.filename = opts.filename && opts.filename + '.json' || 'stats.json';
+    this.publicPath = opts.usePublicPath;
   }
 
   apply(compiler) {
     compiler.plugin("emit", (comp, cb) => {
-      const stats = comp.getStats().toJson();
+      const stats = comp.getStats().toJson({ publicPath: true });
 
       const entrypoints = Object.keys(stats.entrypoints);
 
       const files = entrypoints.reduce((acc, entrypoint) => {
-        acc[entrypoint] = sortFilesByType(stats.entrypoints[entrypoint].assets);
+        const assets = stats.entrypoints[entrypoint].assets.map((asset) => {
+          if (this.publicPath) {
+            return `${stats.publicPath}${asset}`;
+          }
+
+          return asset;
+        });
+
+        acc[entrypoint] = sortFilesByType(assets);
         return acc;
       }, {});
 
