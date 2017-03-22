@@ -1,6 +1,6 @@
 {
   "name": "webpack-entry-stats-plugin",
-  "version": "1.0.0",
+  "version": "1.0.1",
   "description": "Webpack plugin that outputs a JSON file with the relevant assets associated with each of the built entrypoints. Useful with the AggressiveSplittingPlugin.",
   "main": "lib/index.js",
   "repository": "https://github.com/songawee/webpack-entry-stats-plugin",
