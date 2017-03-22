@@ -1,1 +1,1 @@
-const foo = () => 'yo';
+const foo = () => "yo";

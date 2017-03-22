@@ -1,5 +1,5 @@
 export default function yo() {
-  return 'yo';
-};
+  return "yo";
+}
 
 yo();

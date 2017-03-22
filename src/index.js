@@ -1,16 +1,12 @@
 const {
   normalizeAssetNames,
   sortFilesByType
-} = require('./util');
+} = require("./util");
 
 class WebpackEntryStatsPlugin {
   constructor(opts = {}) {
-    this.filename = opts.filename && opts.filename + '.json' || 'stats.json';
+    this.filename = (opts.filename && opts.filename + ".json") || "stats.json";
     this.publicPath = opts.usePublicPath;
-    // true, string, undefined
-    /*
-
-    */
   }
 
   apply(compiler) {
@@ -19,19 +15,32 @@ class WebpackEntryStatsPlugin {
 
       const entrypoints = Object.keys(stats.entrypoints);
 
-      const files = entrypoints.reduce((acc, entrypoint) => {
-        const assets = normalizeAssetNames(stats, entrypoint, this.publicPath);
-        acc[entrypoint] = sortFilesByType(assets);
-        return acc;
-      }, {});
+      const files = entrypoints.reduce(
+        (acc, entrypoint) => {
+          let assets = stats.entrypoints[entrypoint].assets;
+
+          if (this.publicPath) {
+            let publicPath = this.publicPath;
+            if (typeof this.publicPath === "boolean") {
+              publicPath = stats.publicPath;
+            }
+
+            assets = normalizeAssetNames(assets, publicPath);
+          }
+
+          acc[entrypoint] = sortFilesByType(assets);
+          return acc;
+        },
+        {}
+      );
 
       const statsStr = JSON.stringify(files, null, 2);
 
       comp.assets[this.filename] = {
-        source: function () {
+        source: function() {
           return statsStr;
         },
-        size: function () {
+        size: function() {
           return statsStr.length;
         }
       };

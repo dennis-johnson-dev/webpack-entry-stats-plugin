@@ -1,9 +1,5 @@
-module.exports = (stats, entrypoint, publicPath = '') => {
-  return stats.entrypoints[entrypoint].assets.map((asset) => {
-    if (publicPath && typeof publicPath === 'boolean') {
-      publicPath = stats.publicPath;
-    }
-
+module.exports = (assets, publicPath = "") => {
+  return assets.map(asset => {
     return `${publicPath}${asset}`;
   });
 };
