@@ -6,7 +6,6 @@ import webpack from 'webpack';
 import WebpackEntryStatsPlugin from '../src/';
 
 const config = (options = {}) => {
-
   return {
     entry: {
       one: path.resolve(__dirname, './fixtures/index.js'),
@@ -35,26 +34,6 @@ const config = (options = {}) => {
   };
 };
 
-const readStatsFile = (file, fs) => {
-  return new Promise((resolve, reject) => {
-    const actual = fs.readFile(path.resolve(__dirname, file), 'utf8', (err, src) => {
-      let json;
-      if (err) {
-        console.error(err);
-        return reject(err);
-      }
-
-      try {
-        json = JSON.parse(src);
-      } catch (err) {
-        return reject(err);
-      }
-
-      resolve(json);
-    });
-  });
-};
-
 describe('Webpack Entry Stats Plugin', () => {
   let statsFile, fs, stats;
 
@@ -75,13 +54,33 @@ describe('Webpack Entry Stats Plugin', () => {
     });
   };
 
+  const readStatsFile = (file) => {
+    return new Promise((resolve, reject) => {
+      const actual = fs.readFile(path.resolve(__dirname, file), 'utf8', (err, src) => {
+        let json;
+        if (err) {
+          console.error(err);
+          return reject(err);
+        }
+
+        try {
+          json = JSON.parse(src);
+        } catch (err) {
+          return reject(err);
+        }
+
+        resolve(json);
+      });
+    });
+  };
+
   beforeEach(async () => {
     fs = new MemoryFs();
-    stats = await getStats(config());
-    statsFile = await readStatsFile('./tmp/stats.json', fs);
   });
 
   it('creates stats entries for each entry point', async () => {
+    stats = await getStats(config());
+    statsFile = await readStatsFile('./tmp/stats.json');
     const expectedEntries = Object.keys(stats.entrypoints);
     const actualEntries = Object.keys(statsFile);
 
@@ -89,6 +88,8 @@ describe('Webpack Entry Stats Plugin', () => {
   });
 
   it('adds extension types as keys in entry stats object', async () => {
+    stats = await getStats(config());
+    statsFile = await readStatsFile('./tmp/stats.json');
     const entry = Object.keys(statsFile)[0];
     const extensions = Object.keys(statsFile[entry]);
 
@@ -98,6 +99,8 @@ describe('Webpack Entry Stats Plugin', () => {
   });
 
   it('adds required assets for each entry', async () => {
+    stats = await getStats(config());
+    statsFile = await readStatsFile('./tmp/stats.json');
     const entries = Object.keys(statsFile);
 
     entries.forEach((entry) => {
@@ -111,11 +114,12 @@ describe('Webpack Entry Stats Plugin', () => {
 
   it('uses filename parameter', async () => {
     stats = await getStats(config({ filename: 'foo' }));
-    statsFile = await readStatsFile('./tmp/foo.json', fs);
+    statsFile = await readStatsFile('./tmp/foo.json');
   });
 
-  it.only('adds webpack config publicPath to asset name', async () => {
+  it('adds webpack config publicPath to asset name', async () => {
     stats = await getStats(config({ usePublicPath: true }));
+    statsFile = await readStatsFile('./tmp/stats.json');
 
     Object.keys(statsFile).forEach((entry) => {
       statsFile[entry].js.forEach((jsFile) => {
@@ -124,9 +128,10 @@ describe('Webpack Entry Stats Plugin', () => {
     });
   });
 
-  it.only('adds publicPath passed as parameter to asset name', async () => {
+  it('adds publicPath passed as parameter to asset name', async () => {
     const publicPath = '/foo/';
     stats = await getStats(config({ usePublicPath: publicPath }));
+    statsFile = await readStatsFile('./tmp/stats.json');
 
     Object.keys(statsFile).forEach((entry) => {
       statsFile[entry].js.forEach((jsFile) => {
