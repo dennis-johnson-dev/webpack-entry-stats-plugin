@@ -1,7 +1,4 @@
-const {
-  normalizeAssetNames,
-  sortFilesByType
-} = require("./util");
+const { sortFilesByType } = require("./util");
 
 class WebpackEntryStatsPlugin {
   constructor(opts = {}) {
@@ -20,12 +17,11 @@ class WebpackEntryStatsPlugin {
           let assets = stats.entrypoints[entrypoint].assets;
 
           if (this.publicPath) {
-            let publicPath = this.publicPath;
             if (typeof this.publicPath === "boolean") {
-              publicPath = stats.publicPath;
+              this.publicPath = stats.publicPath;
             }
 
-            assets = normalizeAssetNames(assets, publicPath);
+            assets = assets.map(asset => `${this.publicPath}${asset}`);
           }
 
           acc[entrypoint] = sortFilesByType(assets);
@@ -37,12 +33,8 @@ class WebpackEntryStatsPlugin {
       const statsStr = JSON.stringify(files, null, 2);
 
       comp.assets[this.filename] = {
-        source: function() {
-          return statsStr;
-        },
-        size: function() {
-          return statsStr.length;
-        }
+        source: () => statsStr,
+        size: () => statsStr.length
       };
 
       cb();

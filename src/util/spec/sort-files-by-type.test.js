@@ -15,6 +15,7 @@ describe("Sort Files by type", () => {
       "foo",
       "cool"
     ];
+
     const files = extensions.map(ext => `alpha.funky-${counter++}.${ext}`);
 
     const filetypeMap = sortFilesByType(files);
