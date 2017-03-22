@@ -114,8 +114,24 @@ describe('Webpack Entry Stats Plugin', () => {
     statsFile = await readStatsFile('./tmp/foo.json', fs);
   });
 
-  it.only('adds publicPath to asset name', async () => {
+  it.only('adds webpack config publicPath to asset name', async () => {
     stats = await getStats(config({ usePublicPath: true }));
-    console.log(statsFile);
+
+    Object.keys(statsFile).forEach((entry) => {
+      statsFile[entry].js.forEach((jsFile) => {
+        expect(jsFile).toContain(stats.publicPath);
+      });
+    });
+  });
+
+  it.only('adds publicPath passed as parameter to asset name', async () => {
+    const publicPath = '/foo/';
+    stats = await getStats(config({ usePublicPath: publicPath }));
+
+    Object.keys(statsFile).forEach((entry) => {
+      statsFile[entry].js.forEach((jsFile) => {
+        expect(jsFile).toContain(publicPath);
+      });
+    });
   });
 });

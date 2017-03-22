@@ -29,8 +29,30 @@ plugins: [
 option | type | default | required
 --- | --- | --- | ---
 *filename* | String | `stats.json` | false
-*usePublicPath* | Boolean | false | false
+*usePublicPath* | Boolean or String | false | false
 
+### Public path
+
+By default, the paths in the output map just have the filename and do not have any other information on paths.
+
+i.e. `'manifest.js'`
+
+If you would like to preprend the `publicPath` property in your webpack config, you can pass `{ usePublicPath: true }`. If you would like to specify the `publicPath` to be prepended, you can pass a string to be used.
+
+
+```js
+// webpack.config.js
+
+output: {
+  publicPath: '/resources/'
+}
+
+new WebpackEntryStatsPlugin({ usePublicPath: true })
+```
+
+This gives us the path to the resource.
+
+`'/resources/manifest.js'`
 
 ## Output
 
