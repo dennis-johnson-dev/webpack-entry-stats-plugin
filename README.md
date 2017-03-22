@@ -33,7 +33,7 @@ option | type | default | required
 
 ### Public path
 
-By default, the paths in the output map just have the filename and do not have any other information on paths.
+By default, the paths in the output map just have the filename and do not have any other information on the resource path.
 
 i.e. `'manifest.js'`
 
@@ -47,12 +47,12 @@ output: {
   publicPath: '/resources/'
 }
 
-new WebpackEntryStatsPlugin({ usePublicPath: true })
+new WebpackEntryStatsPlugin({ usePublicPath: '/other/' })
 ```
 
 This gives us the path to the resource.
 
-`'/resources/manifest.js'`
+`'/other/manifest.js'`
 
 ## Output
 
@@ -82,4 +82,4 @@ This is saying we need to load `manifest.js` and then our entrypoint, probably i
 ...
 ```
 
-If the extract-text-webpack-plugin were included, you would see a `css` key under each entrypoint's extension map.
+If the extract-text-webpack-plugin were included, you would also see a `css` key under each entrypoint's extension map.
