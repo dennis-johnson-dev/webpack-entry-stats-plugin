@@ -1,4 +1,5 @@
 # webpack-entry-stats-plugin
+yoyoyo
 Webpack plugin emitting a JSON file containing the required assets for each of the entrypoints.
 
 This is useful if you are code splitting initial chunks (something like [AggressiveSplittingPlugin](https://github.com/webpack/webpack/tree/master/examples/http2-aggressive-splitting)) and need a reference to the hashed filenames for use in building script tag urls.
